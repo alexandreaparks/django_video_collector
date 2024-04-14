@@ -6,5 +6,8 @@ from . import views
 urlpatterns = [
     # home page url path - requests to this url use home function in views.py file
     path('', views.home, name='home'),
+    # url path to add a new video - uses add function in views.py
+    path('add', views.add, name='add_video')
+
 ]
 
