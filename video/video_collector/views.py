@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib import messages
 from .forms import VideoForm
+from .models import Video
 
 
 def home(request):  # handles requests to home page
@@ -15,6 +16,7 @@ def add(request):  # handles requests to the add page
         new_video_form = VideoForm(request.POST)
         if new_video_form.is_valid():  # uses DB constraints
             new_video_form.save()  # save to DB
+
             messages.info(request, 'New video saved!')
             # TODO show success message or redirect to list of videos
         else:
@@ -25,3 +27,8 @@ def add(request):  # handles requests to the add page
     new_video_form = VideoForm()  # create a new video form to use on webpage
     # combine template with form to create webpage
     return render(request, 'video_collector/add.html', {'new_video_form': new_video_form})
+
+
+def video_list(request):
+    videos = Video.objects.all()  # get all the videos saved in the DB
+    return render(request, 'video_collector/video_list.html', {'videos': videos})
