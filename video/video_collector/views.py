@@ -1,5 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError
 from .forms import VideoForm
 from .models import Video
 
@@ -15,14 +17,19 @@ def add(request):  # handles requests to the add page
     if request.method == 'POST':
         new_video_form = VideoForm(request.POST)
         if new_video_form.is_valid():  # uses DB constraints
-            new_video_form.save()  # save to DB
+            try:
+                new_video_form.save()  # save to DB
+                return redirect('video_list')  # redirect to video_list page
+                # messages.info(request, 'New video saved!')
 
-            messages.info(request, 'New video saved!')
-            # TODO show success message or redirect to list of videos
-        else:
-            # if not valid, reload same page and form with data already entered by user so user can edit
-            messages.warning(request, 'Please check the data entered')
-            return render(request, 'video_collector/add.html', {'new_video_form': new_video_form})
+            except ValidationError:  # not a YouTube URL
+                messages.warning(request, 'Invalid YouTube URL')
+            except IntegrityError:  # duplicate video being added
+                messages.warning(request, 'You already added that video!')
+
+        # if not valid, reload same page and form with data already entered by user so user can edit
+        messages.warning(request, 'Please check the data entered')
+        return render(request, 'video_collector/add.html', {'new_video_form': new_video_form})
 
     new_video_form = VideoForm()  # create a new video form to use on webpage
     # combine template with form to create webpage
