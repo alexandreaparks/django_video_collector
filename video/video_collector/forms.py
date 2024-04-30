@@ -7,3 +7,7 @@ class VideoForm(forms.ModelForm):
     class Meta:
         model = Video
         fields = ['name', 'url', 'notes']
+
+
+class SearchForm(forms.Form):  # form used to get search term from user
+    search_term = forms.CharField()
