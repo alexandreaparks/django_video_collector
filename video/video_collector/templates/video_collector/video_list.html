@@ -11,6 +11,10 @@
     <button type="submit">Search</button>
 </form>
 
+<a href="{% url 'video_list' %}">
+    <button>Clear Search</button>
+</a>
+
 {% for video in videos %}
 
     <div>
