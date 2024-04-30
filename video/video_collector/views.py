@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
+from django.db.models.functions import Lower
 from .forms import VideoForm, SearchForm
 from .models import Video
 
@@ -42,11 +43,11 @@ def video_list(request):
 
     if search_form.is_valid():
         search_term = search_form.cleaned_data['search_term']
-        videos = Video.objects.filter(name__icontains=search_term).order_by('name')  # search DB for search_term matches
+        videos = Video.objects.filter(name__icontains=search_term).order_by(Lower('name'))  # search DB for search_term matches
 
     else:  # form not valid OR first time seeing page with form
         search_form = SearchForm()  # build new blank search form
-        videos = Video.objects.order_by('name')  # get all the videos saved in the DB
+        videos = Video.objects.order_by(Lower('name'))  # get all the videos saved in the DB
 
     return render(request, 'video_collector/video_list.html',
                   {'videos': videos, 'search_form': search_form})
