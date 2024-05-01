@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
@@ -51,3 +51,10 @@ def video_list(request):
 
     return render(request, 'video_collector/video_list.html',
                   {'videos': videos, 'search_form': search_form})
+
+
+def video_details(request, video_pk):  # handles requests to a video detail page
+
+    video = get_object_or_404(Video, pk=video_pk)  # get Video object or return 404 page
+
+    return render(request, 'video_collector/video_detail.html', {'video': video})

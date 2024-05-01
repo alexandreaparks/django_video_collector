@@ -9,7 +9,10 @@ urlpatterns = [
     # url path to add a new video - uses add function in views.py
     path('add', views.add, name='add_video'),
     # url path to view the list of videos
-    path('video_list', views.video_list, name='video_list')
+    path('video_list', views.video_list, name='video_list'),
+    # url path to a video detail page
+    # uses video PK in URL to specify which video to use on detail page
+    path('video/<int:video_pk>', views.video_details, name='video_details')
 
 ]
 
