@@ -189,3 +189,29 @@ class TestVideoModel(TestCase):
         v3 = Video.objects.create(name='abc', notes='example', url='https://www.youtube.com/watch?v=123')
         with self.assertRaises(IntegrityError):
             v3 = Video.objects.create(name='abc', notes='example', url='https://www.youtube.com/watch?v=123')
+
+
+class TestVideoDetail(TestCase):
+
+    def test_video_exists_details_displayed(self):
+        # add test video to DB
+        example_video = Video.objects.create(pk=1, name='Cats', notes='So cute!', url='https://www.youtube.com/watch?v=123')
+
+        # make request
+        response = self.client.get(reverse('video_details', kwargs={'video_pk': 1}))
+
+        # assert correct template is used
+        self.assertTemplateUsed(response, 'video_collector/video_detail.html')
+
+        # assert page contains details about video
+        self.assertContains(response, 'Cats')
+        self.assertContains(response, 'So cute!')
+        self.assertContains(response, 'https://www.youtube.com/watch?v=123')
+
+    def test_video_does_not_exist_returns_404_status(self):
+        # make request to view details about video that does not exist
+        response = self.client.get(reverse('video_details', kwargs={'video_pk': 12345678}))
+
+        # assert 404 status is returned
+        self.assertEqual(404, response.status_code)
+
